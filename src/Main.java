@@ -1,7 +1,31 @@
 import java.util.HashMap;
+//import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
+
+    //    public static  class  Generate {
+//        public Generate(int k) {
+//            for (int l=0; l<k; l++) {
+//                Random random = new Random();
+//
+//                int n = random.nextInt(15)+2;
+//                int m = random.nextInt(15)+2;
+//                int[][] array = new int[n][m];
+//                for (int i = 0; i < n; i++) {
+//                    for (int j = 0; j < m; j++) {
+//                        int t =  random.nextInt(3);
+//                        array[i][j] =  (t == 0) ? 1:0;
+//                    }
+//                }
+//                Data date = new Data(n,m,array);
+//                System.out.println(date);
+//                System.out.println(date.getResult());
+//                System.out.println(date);
+//                System.out.println("-------------------------------------");
+//            }
+//        }
+//    }
     public static class Data {
         public class Dot {
             private int i0;
@@ -50,8 +74,7 @@ public class Main {
         private int n;
         private int m;
         private int[][] array;
-
-        HashMap<Integer, Dot> resultList;
+        private HashMap<Integer, Dot> resultList;
 
         Data() {
             Scanner in = new Scanner(System.in);
@@ -66,9 +89,16 @@ public class Main {
             resultList = new HashMap<>();
         }
 
+//        Data(int n, int m, int [][] array) {
+//            this.n = n;
+//            this.m = m;
+//            this.array = array;
+//            resultList = new HashMap<>();
+//        }
+
         @Override
         public String toString() {
-            String result = n + " " + m;
+            String result = m + " " + n;
             for (int i = 0; i < n; i++) {
                 result += "\n";
                 for (int j = 0; j < m; j++) {
@@ -76,6 +106,18 @@ public class Main {
                 }
             }
             return result;
+        }
+
+        private void setOtherPlots(int index) {
+            int count = 0;
+            for (int i = resultList.get(index).i0; i <= resultList.get(index).iN; i++) {
+                for (int j = resultList.get(index).j0; j <= resultList.get(index).jN; j++) {
+                    if (array[i][j] != 0) {
+                        count++;
+                    }
+                }
+            }
+            resultList.get(index).setPlots(count);
         }
 
         public int getResult() {
@@ -86,17 +128,22 @@ public class Main {
                         resultList.put(index, new Dot(i, j));
                         int s = recursionSet(i, j, index);
                         if (s == 1) {
-                            array[i][j] = 0;
+                            array[i][j] = 1;
                             resultList.remove(index);
+                            index--;
                         } else {
-                            resultList.get(index).setPlots(s);
+                            // setOtherPlots(index);
+                            //resultList.get(index).setPlots(s);
                         }
                         index++;
                     }
                 }
             }
 
-             resultList.forEach((k, v) -> System.out.println(k + "=" + v));
+
+            resultList.forEach((k, v) -> setOtherPlots(k));
+
+            //  resultList.forEach((k, v) -> System.out.println(k + "=" + v));
 
 //            double efficiency = 0.0;
             int resultPlots = 0;
@@ -113,9 +160,9 @@ public class Main {
                     resultPlots = currentPlots;
                     resultSize = currentSize;
                 } else if (resultSize * currentPlots == currentSize * resultPlots) {
-                    if ( resultSize < currentSize) {
-                    resultPlots = currentPlots;
-                    resultSize = currentSize;
+                    if (resultSize < currentSize) {
+                        resultPlots = currentPlots;
+                        resultSize = currentSize;
                     }
                 } else if (resultSize == 0) {
                     resultPlots = currentPlots;
@@ -140,7 +187,7 @@ public class Main {
                 return 1 +
                         recursionSet(i - 1, j - 1, index) +
                         recursionSet(i - 1, j, index) +
-                        recursionSet(i - 1, j + 1, index)+
+                        recursionSet(i - 1, j + 1, index) +
 
                         recursionSet(i, j - 1, index) +
                         recursionSet(i, j + 1, index) +
@@ -155,8 +202,9 @@ public class Main {
 
 
     public static void main(String[] args) {
+        //new Generate(10);
         Data date = new Data();
         System.out.println(date.getResult());
-        System.out.println(date);
+        //  System.out.println(date);
     }
 }
